@@ -1,18 +1,19 @@
 ﻿using Microsoft.SqlServer.Server;
 using System;
 using System.Data.SqlTypes;
+using System.IO;
 using System.Numerics;
-using System.Runtime.InteropServices;
+using System.Text;
 
 namespace PrismaDB.MSSQL.AggregateUDFs
 {
     [Serializable]
-    [StructLayout(LayoutKind.Sequential)]
     [SqlUserDefinedAggregate(
-            Format.Native,       // https://docs.microsoft.com/en-us/dotnet/api/microsoft.sqlserver.server.format?view=netframework-4.5
+            Format.UserDefined,     // https://docs.microsoft.com/en-us/dotnet/api/microsoft.sqlserver.server.format?view=netframework-4.5
             IsInvariantToNulls = true,
             IsInvariantToDuplicates = false,
-            IsInvariantToOrder = true)]
+            IsInvariantToOrder = true,
+            MaxByteSize = 8000)]
     public class PaillierAggregateSum
     {
         private BigInteger accumulator;
@@ -58,6 +59,32 @@ namespace PrismaDB.MSSQL.AggregateUDFs
         public SqlBytes Terminate()
         {
             return new SqlBytes(accumulator.ToByteArray());
+        }
+
+        public void Read(BinaryReader r)
+        {
+            isEmpty = r.ReadBoolean();
+            var accLength = r.ReadInt32();
+            var accBytes = r.ReadBytes(accLength);
+            var NsqLength = r.ReadInt32();
+            var NsqBytes = r.ReadBytes(NsqLength);
+
+            accumulator = new BigInteger(accBytes);
+            cachedNSq = new BigInteger(NsqBytes);
+        }
+
+        public void Write(BinaryWriter w)
+        {
+            var accBytes = accumulator.ToByteArray();
+            Int32 accLength = accBytes.Length;
+            var NsqBytes = cachedNSq.ToByteArray();
+            Int32 NsqLength = NsqBytes.Length;
+
+            w.Write(isEmpty);
+            w.Write(accLength);
+            w.Write(accBytes);
+            w.Write(NsqLength);
+            w.Write(NsqBytes);
         }
     }
 }
