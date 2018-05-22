@@ -3,7 +3,6 @@ using System;
 using System.Data.SqlTypes;
 using System.IO;
 using System.Numerics;
-using System.Text;
 
 namespace PrismaDB.MSSQL.AggregateUDFs
 {
@@ -14,7 +13,7 @@ namespace PrismaDB.MSSQL.AggregateUDFs
             IsInvariantToDuplicates = false,
             IsInvariantToOrder = true,
             MaxByteSize = 8000)]
-    public class PaillierAggregateSum
+    public class PaillierAggregateSum : IBinarySerialize
     {
         private BigInteger accumulator;
         private BigInteger cachedNSq;
@@ -36,7 +35,7 @@ namespace PrismaDB.MSSQL.AggregateUDFs
                 isEmpty = false;
                 return;
             }
-            
+
             accumulator = (accumulator * bi_toAdd) % cachedNSq;
         }
 
