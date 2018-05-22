@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net45</TargetFramework>
+    <TargetFramework>net461</TargetFramework>
     <Version>0.0.1.0</Version>
     <Description></Description>
     <Company>Nanyang Technological Unviersity</Company>
