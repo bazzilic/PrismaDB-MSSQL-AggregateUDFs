@@ -1,9 +1,11 @@
 ﻿using Microsoft.SqlServer.Server;
+using System;
 using System.Data.SqlTypes;
 using System.Numerics;
 
 namespace PrismaDB.MSSQL.AggregateUDFs
 {
+    [Serializable]
     [SqlUserDefinedAggregate(
             Format.Native,       // https://docs.microsoft.com/en-us/dotnet/api/microsoft.sqlserver.server.format?view=netframework-4.5
             IsInvariantToNulls = true,
