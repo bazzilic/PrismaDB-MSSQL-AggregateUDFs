@@ -47,6 +47,7 @@ namespace PrismaDB.MSSQL.AggregateUDFs
             if (isEmpty)
             {
                 accumulator = anotherInstance.accumulator;
+                cachedNSq = anotherInstance.cachedNSq;
                 isEmpty = false;
             }
             else
