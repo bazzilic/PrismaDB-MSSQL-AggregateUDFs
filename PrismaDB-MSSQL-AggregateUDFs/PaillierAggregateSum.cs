@@ -15,7 +15,7 @@ namespace PrismaDB.MSSQL.AggregateUDFs
             MaxByteSize = 8000)]
     public class PaillierAggregateSum : IBinarySerialize
     {
-        private BigInteger accumulator;
+        private byte[] accumulator;
         private BigInteger cachedNSq;
         private bool isEmpty;
 
@@ -26,7 +26,7 @@ namespace PrismaDB.MSSQL.AggregateUDFs
 
         public void Accumulate(SqlBytes p_toAdd, SqlBytes p_NSquare)
         {
-            var bi_toAdd = new BigInteger(p_toAdd.Buffer);
+            var bi_toAdd = p_toAdd.Buffer;
 
             if (isEmpty)
             {
@@ -36,7 +36,7 @@ namespace PrismaDB.MSSQL.AggregateUDFs
                 return;
             }
 
-            accumulator = (accumulator * bi_toAdd) % cachedNSq;
+            accumulator = Add(accumulator, bi_toAdd, cachedNSq);
         }
 
         public void Merge(PaillierAggregateSum anotherInstance)
@@ -52,13 +52,13 @@ namespace PrismaDB.MSSQL.AggregateUDFs
             }
             else
             {
-                accumulator = (accumulator * anotherInstance.accumulator) % cachedNSq;
+                accumulator = Add(accumulator, anotherInstance.accumulator, cachedNSq);
             }
         }
 
         public SqlBytes Terminate()
         {
-            return new SqlBytes(accumulator.ToByteArray());
+            return new SqlBytes(accumulator);
         }
 
         public void Read(BinaryReader r)
@@ -69,13 +69,13 @@ namespace PrismaDB.MSSQL.AggregateUDFs
             var NsqLength = r.ReadInt32();
             var NsqBytes = r.ReadBytes(NsqLength);
 
-            accumulator = new BigInteger(accBytes);
+            accumulator = accBytes;
             cachedNSq = new BigInteger(NsqBytes);
         }
 
         public void Write(BinaryWriter w)
         {
-            var accBytes = accumulator.ToByteArray();
+            var accBytes = accumulator;
             Int32 accLength = accBytes.Length;
             var NsqBytes = cachedNSq.ToByteArray();
             Int32 NsqLength = NsqBytes.Length;
@@ -85,6 +85,37 @@ namespace PrismaDB.MSSQL.AggregateUDFs
             w.Write(accBytes);
             w.Write(NsqLength);
             w.Write(NsqBytes);
+        }
+        
+        public static byte[] Add(byte[] first, byte[] second, BigInteger NSquare)
+        {
+            var firstActual = new byte[first.Length / 2];
+            Array.Copy(first, firstActual, first.Length / 2);
+            var firstNegative = new byte[first.Length / 2];
+            Array.Copy(first, first.Length / 2, firstNegative, 0, first.Length / 2);
+            var secondActual = new byte[second.Length / 2];
+            Array.Copy(second, secondActual, second.Length / 2);
+            var secondNegative = new byte[second.Length / 2];
+            Array.Copy(second, second.Length / 2, secondNegative, 0, second.Length / 2);
+
+            var addActual = AddParts(firstActual, secondActual, NSquare);
+            var addNegative = AddParts(firstNegative, secondNegative, NSquare);
+
+            var add = new byte[first.Length];
+            Array.Copy(addActual, 0, add, 0, addActual.Length);
+            Array.Copy(addNegative, 0, add, add.Length / 2, addNegative.Length);
+
+            return add;
+        }
+
+        private static byte[] AddParts(byte[] first, byte[] second, BigInteger NSquare)
+        {
+            var A = new BigInteger(first);
+            var B = new BigInteger(second);
+
+            var resBi = (A * B) % NSquare;
+            var res = resBi.ToByteArray();
+            return res;
         }
     }
 }
