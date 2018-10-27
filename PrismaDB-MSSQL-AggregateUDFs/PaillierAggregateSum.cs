@@ -86,8 +86,8 @@ namespace PrismaDB.MSSQL.AggregateUDFs
             w.Write(NsqLength);
             w.Write(NsqBytes);
         }
-        
-        public static byte[] Add(byte[] first, byte[] second, BigInteger NSquare)
+
+        private static byte[] Add(byte[] first, byte[] second, BigInteger NSquare)
         {
             var firstActual = new byte[first.Length / 2];
             Array.Copy(first, firstActual, first.Length / 2);
