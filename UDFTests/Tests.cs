@@ -23,11 +23,11 @@ namespace UDFTests
                 var udf2 = new PaillierAggregateSum();
                 var udf3 = new PaillierAggregateSum();
 
-                var Nsq = IntToBytes(rnd.Next());
-                var p1 = IntToBytes(rnd.Next());
-                var p2 = IntToBytes(rnd.Next());
-                var p3 = IntToBytes(rnd.Next());
-                var p4 = IntToBytes(rnd.Next());
+                var Nsq = RandomBytes();
+                var p1 = RandomBytes();
+                var p2 = RandomBytes();
+                var p3 = RandomBytes();
+                var p4 = RandomBytes();
 
                 udf1.Init();
                 udf1.Accumulate(p1, Nsq);
@@ -58,10 +58,10 @@ namespace UDFTests
                 var udf2 = new PaillierAggregateSum();
                 var udf3 = new PaillierAggregateSum();
 
-                var Nsq = IntToBytes(rnd.Next());
-                var p1 = IntToBytes(rnd.Next());
-                var p2 = IntToBytes(rnd.Next());
-                var p3 = IntToBytes(rnd.Next());
+                var Nsq = RandomBytes();
+                var p1 = RandomBytes();
+                var p2 = RandomBytes();
+                var p3 = RandomBytes();
 
                 udf1.Init();
                 udf1.Accumulate(p1, Nsq);
@@ -86,10 +86,10 @@ namespace UDFTests
                 var udf2 = new PaillierAggregateSum();
                 var udf3 = new PaillierAggregateSum();
 
-                var Nsq = IntToBytes(rnd.Next());
-                var p1 = IntToBytes(rnd.Next());
-                var p2 = IntToBytes(rnd.Next());
-                var p3 = IntToBytes(rnd.Next());
+                var Nsq = RandomBytes();
+                var p1 = RandomBytes();
+                var p2 = RandomBytes();
+                var p3 = RandomBytes();
 
                 udf1.Init();
                 udf1.Accumulate(p1, Nsq);
@@ -109,9 +109,11 @@ namespace UDFTests
             }
         }
 
-        private SqlBytes IntToBytes(int i)
+        private SqlBytes RandomBytes()
         {
-            var b = BitConverter.GetBytes(i);
+            var b = new byte[8];
+            var bi = BitConverter.GetBytes(rnd.Next());
+            Array.Copy(bi, b, bi.Length);
             return new SqlBytes(b);
         }
     }
