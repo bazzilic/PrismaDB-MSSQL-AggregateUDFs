@@ -1,8 +1,6 @@
 using System;
 using System.Data.SqlTypes;
 using System.Numerics;
-using System.Security.Cryptography;
-using Aprismatic;
 using Aprismatic.PaillierExt;
 using Xunit;
 using PrismaDB.MSSQL.AggregateUDFs;
