@@ -15,10 +15,11 @@ namespace PrismaDB.MSSQL.AggregateUDFs
             MaxByteSize = 8000)]
     public class PaillierAggregateSum : IBinarySerialize
     {
-        private BigInteger accumulatorActual;
+        private BigInteger accumulatorAct;
         private BigInteger accumulatorNeg;
         private BigInteger cachedNSq;
         private bool isEmpty;
+        private int origLength;
 
         public void Init()
         {
@@ -38,14 +39,15 @@ namespace PrismaDB.MSSQL.AggregateUDFs
 
             if (isEmpty)
             {
-                accumulatorActual = biActual_toAdd;
+                origLength = bytes.Length;
+                accumulatorAct = biActual_toAdd;
                 accumulatorNeg = biNegative_toAdd;
                 cachedNSq = new BigInteger(p_NSquare.Buffer);
                 isEmpty = false;
                 return;
             }
 
-            accumulatorActual = (accumulatorActual * biActual_toAdd) % cachedNSq;
+            accumulatorAct = (accumulatorAct * biActual_toAdd) % cachedNSq;
             accumulatorNeg = (accumulatorNeg * biNegative_toAdd) % cachedNSq;
         }
 
@@ -56,24 +58,25 @@ namespace PrismaDB.MSSQL.AggregateUDFs
 
             if (isEmpty)
             {
-                accumulatorActual = anotherInstance.accumulatorActual;
+                origLength = anotherInstance.origLength;
+                accumulatorAct = anotherInstance.accumulatorAct;
                 accumulatorNeg = anotherInstance.accumulatorNeg;
                 cachedNSq = anotherInstance.cachedNSq;
                 isEmpty = false;
             }
             else
             {
-                accumulatorActual = (accumulatorActual * anotherInstance.accumulatorActual) % cachedNSq;
+                accumulatorAct = (accumulatorAct * anotherInstance.accumulatorAct) % cachedNSq;
                 accumulatorNeg = (accumulatorNeg * anotherInstance.accumulatorNeg) % cachedNSq;
             }
         }
 
         public SqlBytes Terminate()
         {
-            var resActual = accumulatorActual.ToByteArray();
+            var resActual = accumulatorAct.ToByteArray();
             var resNegative = accumulatorNeg.ToByteArray();
 
-            var res = new byte[resActual.Length * 2];
+            var res = new byte[origLength];
             Array.Copy(resActual, 0, res, 0, resActual.Length);
             Array.Copy(resNegative, 0, res, res.Length / 2, resNegative.Length);
 
@@ -85,30 +88,30 @@ namespace PrismaDB.MSSQL.AggregateUDFs
             isEmpty = r.ReadBoolean();
             var accActualLength = r.ReadInt32();
             var accActualBytes = r.ReadBytes(accActualLength);
-            var accNegLength = r.ReadInt32();
-            var accNegBytes = r.ReadBytes(accNegLength);
+            var accNegativeLength = r.ReadInt32();
+            var accNegativeBytes = r.ReadBytes(accNegativeLength);
             var NsqLength = r.ReadInt32();
             var NsqBytes = r.ReadBytes(NsqLength);
 
-            accumulatorActual = new BigInteger(accActualBytes);
-            accumulatorNeg = new BigInteger(accNegBytes);
+            accumulatorAct = new BigInteger(accActualBytes);
+            accumulatorNeg = new BigInteger(accNegativeBytes);
             cachedNSq = new BigInteger(NsqBytes);
         }
 
         public void Write(BinaryWriter w)
         {
-            var accActualBytes = accumulatorActual.ToByteArray();
+            var accActualBytes = accumulatorAct.ToByteArray();
             Int32 accActualLength = accActualBytes.Length;
-            var accNegBytes = accumulatorNeg.ToByteArray();
-            Int32 accNegLength = accNegBytes.Length;
+            var accNegativeBytes = accumulatorNeg.ToByteArray();
+            Int32 accNegativeLength = accNegativeBytes.Length;
             var NsqBytes = cachedNSq.ToByteArray();
             Int32 NsqLength = NsqBytes.Length;
 
             w.Write(isEmpty);
             w.Write(accActualLength);
             w.Write(accActualBytes);
-            w.Write(accNegLength);
-            w.Write(accNegBytes);
+            w.Write(accNegativeLength);
+            w.Write(accNegativeBytes);
             w.Write(NsqLength);
             w.Write(NsqBytes);
         }
