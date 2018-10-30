@@ -19,7 +19,6 @@ namespace PrismaDB.MSSQL.AggregateUDFs
         private BigInteger accumulatorNeg;
         private BigInteger cachedNSq;
         private bool isEmpty;
-        private int origLength;
 
         public void Init()
         {
@@ -39,7 +38,6 @@ namespace PrismaDB.MSSQL.AggregateUDFs
 
             if (isEmpty)
             {
-                origLength = bytes.Length;
                 accumulatorAct = biActual_toAdd;
                 accumulatorNeg = biNegative_toAdd;
                 cachedNSq = new BigInteger(p_NSquare.Buffer);
@@ -58,7 +56,6 @@ namespace PrismaDB.MSSQL.AggregateUDFs
 
             if (isEmpty)
             {
-                origLength = anotherInstance.origLength;
                 accumulatorAct = anotherInstance.accumulatorAct;
                 accumulatorNeg = anotherInstance.accumulatorNeg;
                 cachedNSq = anotherInstance.cachedNSq;
@@ -76,7 +73,9 @@ namespace PrismaDB.MSSQL.AggregateUDFs
             var resActual = accumulatorAct.ToByteArray();
             var resNegative = accumulatorNeg.ToByteArray();
 
-            var res = new byte[origLength];
+            var maxLength = resActual.Length > resNegative.Length ? resActual.Length : resNegative.Length;
+
+            var res = new byte[maxLength * 2];
             Array.Copy(resActual, 0, res, 0, resActual.Length);
             Array.Copy(resNegative, 0, res, res.Length / 2, resNegative.Length);
 
