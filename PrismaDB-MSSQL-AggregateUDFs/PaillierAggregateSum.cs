@@ -86,6 +86,7 @@ namespace PrismaDB.MSSQL.AggregateUDFs
         public void Read(BinaryReader r)
         {
             isEmpty = r.ReadBoolean();
+            origLength = r.ReadInt32();
             var accActualLength = r.ReadInt32();
             var accActualBytes = r.ReadBytes(accActualLength);
             var accNegativeLength = r.ReadInt32();
@@ -108,6 +109,7 @@ namespace PrismaDB.MSSQL.AggregateUDFs
             Int32 NsqLength = NsqBytes.Length;
 
             w.Write(isEmpty);
+            w.Write(origLength);
             w.Write(accActualLength);
             w.Write(accActualBytes);
             w.Write(accNegativeLength);
