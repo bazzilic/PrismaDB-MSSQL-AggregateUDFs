@@ -1,10 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
-    <Version>0.0.1.0</Version>
+    <Version>1.0.0.0</Version>
     <Description></Description>
     <Company>Nanyang Technological Unviersity</Company>
-    <Product>PrismaDB.MSSQL.AggregateUDFs</Product>
+    <Product>PrismaDB-MSSQL-AggregateUDFs</Product>
     <Authors>Vasily Sidorov (bazzilic)</Authors>
+    <RootNamespace>PrismaDB.MSSQL.AggregateUDFs</RootNamespace>
   </PropertyGroup>
 </Project>
