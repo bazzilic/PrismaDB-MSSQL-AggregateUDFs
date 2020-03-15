@@ -1,18 +1,30 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2018
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrismaDB-MSSQL-AggregateUDFs", "PrismaDB-MSSQL-AggregateUDFs\PrismaDB-MSSQL-AggregateUDFs.csproj", "{A1D95572-3019-4FD6-8D00-B64C6C0884A1}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{39C672B1-B335-4812-89D1-4F4C3F90B04D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A6502C7E-9F34-40F1-97D8-E6631867E613}"
 	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
 		.gitignore = .gitignore
-		appveyor.yml = appveyor.yml
+		Directory.Build.props = Directory.Build.props
 		nuget.config = nuget.config
+		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UDFTests", "UDFTests\UDFTests.csproj", "{AAB087D1-77F9-40DB-8653-15C413C36311}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6E82EE2D-9243-4B59-9692-C8E23E56320B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{17A405E5-E5B7-4426-9C77-36D7B416C5FC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ci", "ci", "{160DA015-B344-4914-9CDD-854332F4DE16}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\release-dotnet-nuget.yml = .github\workflows\release-dotnet-nuget.yml
+		.github\workflows\test-dotnet-windows.yml = .github\workflows\test-dotnet-windows.yml
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrismaDB.MSSQL.AggregateUDFs", "src\PrismaDB.MSSQL.AggregateUDFs\PrismaDB.MSSQL.AggregateUDFs.csproj", "{676240B5-05F5-4580-98D7-BE666BDC6E80}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UDFTests", "test\UDFTests\UDFTests.csproj", "{60F54E97-12B5-4733-A404-77C867D88E4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,19 +32,23 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A1D95572-3019-4FD6-8D00-B64C6C0884A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A1D95572-3019-4FD6-8D00-B64C6C0884A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A1D95572-3019-4FD6-8D00-B64C6C0884A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A1D95572-3019-4FD6-8D00-B64C6C0884A1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AAB087D1-77F9-40DB-8653-15C413C36311}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AAB087D1-77F9-40DB-8653-15C413C36311}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AAB087D1-77F9-40DB-8653-15C413C36311}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AAB087D1-77F9-40DB-8653-15C413C36311}.Release|Any CPU.Build.0 = Release|Any CPU
+		{676240B5-05F5-4580-98D7-BE666BDC6E80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{676240B5-05F5-4580-98D7-BE666BDC6E80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{676240B5-05F5-4580-98D7-BE666BDC6E80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{676240B5-05F5-4580-98D7-BE666BDC6E80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60F54E97-12B5-4733-A404-77C867D88E4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60F54E97-12B5-4733-A404-77C867D88E4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60F54E97-12B5-4733-A404-77C867D88E4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60F54E97-12B5-4733-A404-77C867D88E4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{676240B5-05F5-4580-98D7-BE666BDC6E80} = {6E82EE2D-9243-4B59-9692-C8E23E56320B}
+		{60F54E97-12B5-4733-A404-77C867D88E4C} = {17A405E5-E5B7-4426-9C77-36D7B416C5FC}
+	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {025FB497-403C-452E-AD6B-735666D3B27C}
+		SolutionGuid = {195B4272-CCC0-4E18-9493-B553A147ECF3}
 	EndGlobalSection
 EndGlobal

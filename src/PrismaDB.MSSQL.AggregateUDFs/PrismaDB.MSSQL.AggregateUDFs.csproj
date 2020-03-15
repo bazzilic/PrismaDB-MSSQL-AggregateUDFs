@@ -1,0 +1,6 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+    <Description>Homomorphic aggregation UDFs for MSSQL.</Description>
+  </PropertyGroup>
+</Project>
